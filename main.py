@@ -14,9 +14,12 @@ d3 = os.path.join(cmip6d,'3')
 
 c = cdsapi.Client()
 variable = #Define variable using CDS variable naming
+vc = #variable code following CMIP6
 mlist = #Define model list
 flist = #choose forcings
 dlist = [d1,d2,d3]
+
+zonmean = True
 
 failedlist = []
 failedfile = os.path.join(cmip6d,'failed.txt') #error output file
@@ -94,8 +97,8 @@ for forcing,direc in zip(flist,dlist):
                                       tds.drop_vars(var)
                                   except:
                                       pass #Unwanted variables not always present
-                                if zonmean == True:
-                                    tds['va'].mean(dim='lon').to_netcdf(os.path.join(direc,model+str(count)+'a.nc'))#lon in some, longitude in others
+                                if zonmean == True: #For zonally averaging
+                                    tds[vc].mean(dim='lon').to_netcdf(os.path.join(direc,model+str(count)+'a.nc'))#lon in some, longitude in others
                                 else:
                                     tds.to_netcdf(os.path.join(direc,model+str(count)+'a.nc'))
                           except:
@@ -104,8 +107,8 @@ for forcing,direc in zip(flist,dlist):
                                       tds.drop_vars(var)
                                   except:
                                       pass
-                                if zonmean == True:
-                                    tds['va'].mean(dim='longitude').to_netcdf(os.path.join(direc,model+str(count)+'a.nc'))
+                                if zonmean == True: 
+                                    tds[vc].mean(dim='longitude').to_netcdf(os.path.join(direc,model+str(count)+'a.nc'))
                                 else:
                                     tds.to_netcdf(os.path.join(direc,model+str(count)+'a.nc'))
                           os.remove(os.path.join(direc,model+str(count)+'.nc'))
